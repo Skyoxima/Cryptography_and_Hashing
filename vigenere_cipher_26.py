@@ -2,16 +2,17 @@
 #~ Implementing Vigenere Cipher for uppercase English alphabets
 # https://pages.mtu.edu/~shene/NSF-4/Tutorial/VIG/Vig-Base.html
 
-cap_αß_dict = {i:f'{chr(i + 65)}' for i in range(26)}         # used to form the table below
-
 #* vigenere_table is a list of 26 lists, with each list having 26 chars. starting one step ahead successively
-vigenere_table = [[cap_αß_dict[(i + j) % 26] for j in range(26)] for i in range(26)]
+vigenere_table = [[chr((i + j - 65) % 26 + 65) for j in range(26)] for i in range(65, 91)]
 """
-  How the table is formed (in one line using the dictionary)
-  1. From the dictionary cap_αß_dict which has pairs as {0: 'A', 1: 'B',..., 25: 'Z'}, we pick out the characters by using the keys.
-  2. We need to form 26 lists, with each list starting from the next char. in the alphabet. 
-  3. Adding 'i' does that, For e.g, for i = 4 (i.e the 5th list), j goes 0 to 25 (as defined) but (j + i) will go 4 to 29, i.e E -> Z of the cap_αß_dict, and then A -> D since % 26  
+Table formation:
+As Vigenere table is 26 caesar ciphers essentially, I used that logic to form the table (now, lol) row by row
+1. i goes from 65 - 90 i.e the ASCII values for A - Z. 
+2. For each i, j goes 0 - 25, so, 
+3. (i + j) goes 65 - 90 for i = 65 j = [0, 25]; 66 - 91 for i = 66 and j = [0, 25], and so on
+4. For e.g, when (i + j) = 91, (i + j - 65) = 26, (i + j - 65) % 26 = 0 and 0 + 65 would be 65 which is ASCII for A, hence implementing caesar cycle properly (same logic as done in the standalone caesar cipher but with 26 chars. instead of 95)
 """
+
 # print(*vigenere_table, sep="\n")
 # alternatively, i think dictionary of dictionaries could've also been used
 
