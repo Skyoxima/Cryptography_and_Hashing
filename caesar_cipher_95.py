@@ -3,13 +3,13 @@
 def caesar_encrypt(plain_text: str, key: int):
   cipher_text = ""
   for i in plain_text:
-    cipher_text += (chr)(((ord(i) + key - 32) % 95) + 32)
+    cipher_text += chr(((ord(i) + key - 32) % 95) + 32)
   return cipher_text
 
 def caesar_decrypt(cipher_text: str, key: int):
   plain_text = ""
   for i in cipher_text:
-    plain_text += (chr)(((ord(i) - key - 32) % 95) + 32)
+    plain_text += chr(((ord(i) - key - 32) % 95) + 32)
   return plain_text
 
 def caesar_cipher():
