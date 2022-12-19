@@ -1,5 +1,6 @@
 
 #~ Implementing Vigenere Cipher for uppercase English alphabets
+# https://pages.mtu.edu/~shene/NSF-4/Tutorial/VIG/Vig-Base.html
 
 cap_αß_dict = {i:f'{chr(i + 65)}' for i in range(26)}         # used to form the table below
 
