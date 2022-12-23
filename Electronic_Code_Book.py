@@ -52,7 +52,7 @@ def electronic_code_book_encryption():
     pt_128_blocks[i].append(pt_128_blocks[i].pop(0))
   
   # key = input("Enter the 16 character key: ")
-  key = "aaaaaaaaaaaaaaaa"
+  key = "aZaazaaaaaaazaaa"
   key_ascii = list(map(lambda x: ord(x), list(key)))
   key_128 = ascii_list_binarizer(key_ascii)
   # XOR with key's 128 bits
@@ -62,4 +62,5 @@ def electronic_code_book_encryption():
   for block in pt_128_blocks:
     cipher_text += "".join(list(map(lambda x: chr(x), bin_list_asciirizer(block))))
   print("Cipher Text: ",cipher_text, len(cipher_text))
+  
 electronic_code_book_encryption()
