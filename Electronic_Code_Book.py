@@ -1,7 +1,6 @@
 
-#~ Implementing Electronic Code Book Block Cipher Technique
+#~ Implementing Electronic Code Book Block Cipher technique (t-shifts)
 
-import copy
 def text_padder(text):
   while len(text) % 16 != 0:
     text += '_'
@@ -26,7 +25,7 @@ def ascii_list_binarizer(ascii_list):
     binary_list.extend(pad_to_8)
   return binary_list
 
-# both list_a and list_b are lists of 128 bits
+#* both list_a and list_b are lists of 128 bits
 def list_XOR(list_a, list_b):
   XORed = []
   for x, y in zip(list_a, list_b):
@@ -46,7 +45,7 @@ def bin_list_asciirizer(bin_list):
     ascii_list.append(binary_to_ascii(bin_list[eight_indx - 8: eight_indx]))
   return ascii_list
 
-def electronic_code_book_encryption(plain_text, key):
+def electronic_code_book_encryption(plain_text, key, shift):
   # A list of lists containing 16 ascii values representing 16 chars. splits (blocks) of plain text
   pt_ascii_blocks = [list(map(lambda x: ord(x), list(plain_text[i - 16: i]))) for i in range(16, len(plain_text) + 1, 16)]       
   # list of lists containing 128 binary bits for 16 ascii values (1 ascii value -> 8 bits of binary digits, 16 x 8 = 128 bits)
@@ -58,9 +57,10 @@ def electronic_code_book_encryption(plain_text, key):
   key_128 = ascii_list_binarizer(list(map(lambda x: ord(x), list(key))))
 
   # circular left shift each block of pt_128 individually (that's what block cipher wants to achieve, separated encryption)
-  for block in pt_128_blocks:
-    block.append(block.pop(0))  
-  
+  for i in range(shift):
+    for block in pt_128_blocks:
+      block.append(block.pop(0))  
+    
   # XORing each 128 bits block with key's 128 bits
   for b_indx in range(len(pt_128_blocks)):
     pt_128_blocks.append(list_XOR(pt_128_blocks[b_indx], key_128))
@@ -72,7 +72,7 @@ def electronic_code_book_encryption(plain_text, key):
     cipher_text += "".join(list(map(lambda x: chr(x), bin_list_asciirizer(block))))
   return cipher_text
 
-def electronic_code_book_decryption(cipher_text, key):
+def electronic_code_book_decryption(cipher_text, key, shift):
   # getting the required setup of blocks of 128 bits (same as plain_text)
   key_128 = ascii_list_binarizer(list(map(lambda x: ord(x), list(key))))
   ct_ascii_blocks = [list(map(lambda x: ord(x), list(cipher_text[i - 16: i]))) for i in range(16, len(cipher_text) + 1, 16)]
@@ -86,9 +86,10 @@ def electronic_code_book_decryption(cipher_text, key):
   ct_128_blocks = ct_128_blocks[len(ct_128_blocks) // 2:]
   
   # now the XOR'ed bits are to be circular right shifted, i.e the reverse direction
-  for block in ct_128_blocks:
-    block.insert(0, block.pop(-1))
-  
+  for i in range(shift):
+    for block in ct_128_blocks:
+      block.insert(0, block.pop(-1))
+    
   plain_text = ""
   for block in ct_128_blocks:
     plain_text += "".join(list(map(lambda x: chr(x), bin_list_asciirizer(block))))
@@ -99,9 +100,10 @@ def electronic_code_book():
   print("\033[38;5;85mOriginal Plain Text:", plain_text, "\033[0m")
   plain_text = text_padder(plain_text)
   key = input("Enter the 16 character key string: ")[:16]
-  cipher_text = electronic_code_book_encryption(plain_text, key)
-  print("\033[38;5;197mCipher Text:", cipher_text, "\033[0m", len(cipher_text))
-  plain_text = electronic_code_book_decryption(cipher_text, key)
-  print("\033[38;5;209mDeciphered Text:", plain_text, "\033[0m", len(plain_text))
+  shift = int(input("Enter the shift amount 't': "))
+  cipher_text = electronic_code_book_encryption(plain_text, key, shift)
+  print("\033[38;5;197mCipher Text:", cipher_text, "\033[0m")
+  plain_text = electronic_code_book_decryption(cipher_text, key, shift)
+  print("\033[38;5;209mDeciphered Text:", plain_text, "\033[0m")
   
 electronic_code_book()
