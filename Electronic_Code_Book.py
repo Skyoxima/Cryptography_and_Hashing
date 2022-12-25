@@ -64,7 +64,7 @@ def electronic_code_book_encryption(plain_text, key, shift):
   # XORing each 128 bits block with key's 128 bits
   for b_indx in range(len(pt_128_blocks)):
     pt_128_blocks.append(list_XOR(pt_128_blocks[b_indx], key_128))
-  pt_128_blocks = pt_128_blocks[len(pt_128_blocks) // 2:]
+  pt_128_blocks = pt_128_blocks[len(pt_128_blocks) // 2:]               # the latter half of the main list is containing the actual XORed result
 
   # forming the cipher_text in string format (which will be equal to the length of plain_text) from the blocks of bits
   cipher_text = ""
@@ -83,7 +83,7 @@ def electronic_code_book_decryption(cipher_text, key, shift):
   # Since XOR was the last thing done when encrypting, it will be the first thing done when decrypting (also XOR because XORing an XOR brings us back to the starting bits)
   for b_indx in range(len(ct_128_blocks)):
     ct_128_blocks.append(list_XOR(ct_128_blocks[b_indx], key_128))
-  ct_128_blocks = ct_128_blocks[len(ct_128_blocks) // 2:]
+  ct_128_blocks = ct_128_blocks[len(ct_128_blocks) // 2:]         
   
   # now the XOR'ed bits are to be circular right shifted, i.e the reverse direction
   for i in range(shift):
