@@ -110,9 +110,9 @@ def simplified_DES():
   key_2 = input("Enter the second key: ")[:6]
   key_2_48 = ascii_list_binarizer(list(map(lambda x: ord(x), list(key_2))))
 
-  cipher_text, ct_64 = simplified_DES_encryption(pt_64, keys_48 = (key_1_48, key_2_48), s_box = (s_box_1, s_box_2))
+  cipher_text, ct_64 = simplified_DES_encryption(pt_64, keys_48 = (key_1_48, key_2_48, key_1_48), s_box = (s_box_1, s_box_2, s_box_1), noofrounds = 3)
   print("\033[38;5;197mCipher Text:", cipher_text, "\033[0m")
-  plain_text, pt_64 = simplified_DES_encryption(ct_64, keys_48 = (key_2_48, key_1_48), s_box = (s_box_2, s_box_1))
+  plain_text, pt_64 = simplified_DES_encryption(ct_64, keys_48 = (key_1_48, key_2_48, key_1_48), s_box = (s_box_1, s_box_2, s_box_1), noofrounds = 3)
   print("\033[38;5;197mDeciphered Text:", plain_text, "\033[0m")
 
 simplified_DES()
