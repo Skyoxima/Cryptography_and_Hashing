@@ -1,16 +1,19 @@
 
 #~ Implementing playfair cipher for uppercase English alphabets
 def process_pt(text: str):
-  ch_inx = 0
-  while ch_inx < len(text):
-    if ch_inx != len(text) - 1:
-      if text[ch_inx + 1] == text[ch_inx]:
-        text = text[:ch_inx + 1] + 'X' + text[ch_inx + 1:]
-    ch_inx += 1
-  
-  if len(text) % 2 != 0:
-    text += 'X' if text[-1] != 'X' else 'Y'
-  return text
+  pairs, idx = [], 2
+  while idx <= len(text) + 1:
+    pair = text[idx - 2: idx]
+    if len(pair) == 1:            # safeguarding from index out of range errors at the last pair
+      text += 'X' if text[-1] != 'X' else 'Y'
+      continue      
+    if pair[0] == pair[1]:
+      text = text[:idx - 1] + "X" + text[idx - 1:]
+      continue
+    pairs.append(pair)      
+    idx += 2
+
+  return pairs
 
 def unique_chars(text: str):
   unique = []
@@ -29,9 +32,7 @@ def make_enc_mx(key: str):
   #! This variation of playfair cipher always pairs I and J no matter the occurence in the key (cause on the net I've seen J getting omitted or paired both)
   enc_mx.pop(enc_mx.index('J'))
   enc_mx[enc_mx.index('I')] = 'IJ'
-  # print(enc_mx, len(enc_mx))
-  # tried keeping the enc_mx 1D but it's not feasible
-  return [enc_mx[i-5: i] for i in range(5, len(enc_mx) + 1, 5)]
+  return [enc_mx[i-5: i] for i in range(5, len(enc_mx) + 1, 5)]     # 2Ded
 
 def give_rc_inx(mx, char):
   if char == 'I' or char == 'J':
@@ -44,22 +45,20 @@ def give_rc_inx(mx, char):
 
 def playfair_encryption(plain_text: str, key: str):
   cipher_text = ""
-  plain_text = process_pt(plain_text)
   enc_mx = make_enc_mx(key)
   print(*enc_mx, sep="\n")
-  pt_ch_pairs = [plain_text[i - 2: i] for i in range(2, len(plain_text) + 1, 2)]
+  pt_ch_pairs = process_pt(plain_text)
   for pair in pt_ch_pairs:
     r1, c1 = give_rc_inx(enc_mx, pair[0])
-    # print(pair[0], r1, c1)
     r2, c2 = give_rc_inx(enc_mx, pair[1])
-    # print(pair[1], r2, c2)
+    print(f"{pair}: {r1, c1}, {r2, c2}")
+
     if r1 == r2:
-      cipher_text += enc_mx[r1][(c1 + 1) % 5] + enc_mx[r2][(c2 + 1) % 5]
+      cipher_text += (enc_mx[r1][(c1 + 1) % 5] + enc_mx[r2][(c2 + 1) % 5]).replace('IJ','I')
     elif c1 == c2:
-      cipher_text += enc_mx[(r1 + 1) % 5][c1] + enc_mx[(r2 + 1) % 5][c2]
+      cipher_text += (enc_mx[(r1 + 1) % 5][c1] + enc_mx[(r2 + 1) % 5][c2]).replace('IJ', 'I')
     else:
-      # there are two diff. kinds of diagonals ("forward" and "backward") and they will have to be handled differently 
-      pass
+      cipher_text += (enc_mx[r1][c2] + enc_mx[r2][c1]).replace("IJ", "I") 
   return cipher_text
 
 def playfair():
